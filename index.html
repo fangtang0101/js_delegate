@@ -62,10 +62,11 @@ window.onload = function(){
             var currentTarget= e ? e.currentTarget : this;
 
             //在IE 9下  window.event 与 e 不同 evt没有currentTarget属性,e才有currentTarg 
-            alert("src id==="+target.id+"\n\ncurent target id=="+currentTarget.id);
+            // alert("src id==="+target.id+"\n\ncurent target id=="+currentTarget.id);
             // console.log('data_id ...',currentTarget.data_id);
+            console.log('target ...',target);
 
-
+            // 判断 点击的是否 是 需要代理的 div (此处的selector 为 listener)  id  就是div 的 id   className 就是 div 的 class 
             if(target.id === selector || target.className.indexOf(selector) != -1){
                 fn.call(target);
             }
@@ -90,7 +91,8 @@ window.onload = function(){
         btn.setAttribute("data_id","10");
         btn.setAttribute("id","newbutton");
         // 注意此处：因为子组件中  只有  class = listener 才实现了 delegate 的 方法，所以 此处的这个才是关键
-        btn.className =  'class="listener"';
+        // btn.className =  'class="listener"';
+        btn.className =  'listener';
         
         //没有监听新按钮的onclick事件
         document.getElementById("container").appendChild(btn);
