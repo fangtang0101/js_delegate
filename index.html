@@ -1,0 +1,100 @@
+
+<!-- http://www.cnblogs.com/alsy/p/4915912.html -->
+<!-- https://www.cnblogs.com/siqi/p/3224205.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+</head>
+
+<body>
+
+    <div id="container">
+        <input type="button" id="btn" class="listener" value="button"  />
+    </div>
+    <a href="###" id="btnadd" class="listener">添加一个按钮</a>
+
+</body>
+</html>
+<script>
+
+window.onload = function(){
+
+    /**
+    @para parentId 包裹容器的id
+    @para selector 容器内元素的选择器，支持id和className
+    @para fn 元素上要执行的函数
+    */
+    function delegate(parent, eventType, selector, fn)
+    {
+        //参数处理
+        if(typeof parent === 'string')
+        {
+            var parent = document.getElementById(parent);
+            !parent && alert('parent not found');
+        }
+
+        if(typeof selector !== 'string')
+        {
+            alert('selector is not string');
+        }
+        
+        if(typeof fn !== 'function')
+        {
+           alert('fn is not function');
+       }
+
+       function handle(e){
+            //获取event对象
+            //标准DOM方法事件处理函数第一个参数是event对象
+            //IE可以使用全局变量window.event
+            var evt = window.event ? window.event : e;
+
+            //获取触发事件的原始事件源
+            //标准DOM方法是用target获取当前事件源
+            //IE使用evt.srcElement获取事件源
+            var target = evt.target || evt.srcElement;
+
+            //获取当前正在处理的事件源
+            //标准DOM方法是用currentTarget获取当前事件源
+            //IE中的this指向当前处理的事件源
+            var currentTarget= e ? e.currentTarget : this;
+
+            //在IE 9下  window.event 与 e 不同 evt没有currentTarget属性,e才有currentTarg 
+            alert("src id==="+target.id+"\n\ncurent target id=="+currentTarget.id);
+            // console.log('data_id ...',currentTarget.data_id);
+
+
+            if(target.id === selector || target.className.indexOf(selector) != -1){
+                fn.call(target);
+            }
+        }
+        
+        parent[eventType]=handle;
+    }
+    
+    delegate('container', 'onclick', 'listener', function(){
+        // 回调事件
+        // alert(this);   
+        console.log(this,this.getAttribute('data_id'));  // 获取某个 Dom 元素的 属性值
+
+    });
+    
+    //新增一个元素
+    document.getElementById("btnadd").onclick=function(){
+        var btn = document.createElement("input");
+        btn.setAttribute("value","点击我试试");
+        btn.setAttribute("type","button");
+        // 注意：当你动态添加 一个 子组件的时候，为了区分 具体点击了是 哪一个，可以用自定义的 属性 是区分每个 class ，相当于是 数组中的 第几个，而这个 自定义属性（如 data_id 在 回调事件里面是可以拿到的 ...）
+        btn.setAttribute("data_id","10");
+        btn.setAttribute("id","newbutton");
+        // 注意此处：因为子组件中  只有  class = listener 才实现了 delegate 的 方法，所以 此处的这个才是关键
+        btn.className =  'class="listener"';
+        
+        //没有监听新按钮的onclick事件
+        document.getElementById("container").appendChild(btn);
+    }
+}
+
+</script>
